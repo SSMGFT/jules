@@ -73,7 +73,9 @@ def main():
         return
 
     logging.info(f"Found Natural Gas future: {natural_gas_future['tradingsymbol']}")
-    future_expiry = natural_gas_future["expiry"].date()
+    # Extract the series identifier from the future's symbol (e.g., "NATURALGAS24OCT")
+    future_series = natural_gas_future['tradingsymbol'].replace('FUT', '')
+
 
     # --- 5. Get the last traded price (LTP) of the future to determine the ATM strike ---
     try:
@@ -91,10 +93,9 @@ def main():
     atm_pe = None
 
     for instrument in instruments:
-        # Match by name, expiry date, and strike price
+        # Match by checking if the option symbol starts with the future series and matches the strike
         if (
-            instrument["name"] == FUTURES_SYMBOL_BASE
-            and instrument["expiry"].date() == future_expiry
+            instrument["tradingsymbol"].startswith(future_series)
             and instrument["strike"] == atm_strike
         ):
             if instrument["instrument_type"] == INSTRUMENT_TYPE_CE:
@@ -103,7 +104,7 @@ def main():
                 atm_pe = instrument
 
     if not atm_ce or not atm_pe:
-        logging.error(f"Could not find ATM options for strike {atm_strike} with expiry {future_expiry}.")
+        logging.error(f"Could not find ATM options for series {future_series} and strike {atm_strike}.")
         return
 
     logging.info(f"Found ATM CE: {atm_ce['tradingsymbol']}")
