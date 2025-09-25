@@ -78,13 +78,12 @@ def main():
 
 
     # --- 5. Get the last traded price (LTP) of the future to determine the ATM strike ---
-    try:
-        quote = kite.quote(f"{EXCHANGE}:{natural_gas_future['tradingsymbol']}")
-        ltp = quote[f"{EXCHANGE}:{natural_gas_future['tradingsymbol']}"]["last_price"]
-        logging.info(f"LTP of {natural_gas_future['tradingsymbol']} is {ltp}")
-    except Exception as e:
-        logging.error(f"Failed to get quote for {natural_gas_future['tradingsymbol']}: {e}")
-        return
+    # WORKAROUND: Use the 'last_price' from the instrument dump.
+    # This price is from the start of the day and is not real-time.
+    # This avoids the kite.quote() call which requires a paid subscription for live data.
+    ltp = natural_gas_future["last_price"]
+    logging.info(f"Using day-old LTP of {ltp} from instrument data to find ATM strike.")
+
 
     # --- 6. Find the ATM CE and PE options ---
     # The strike prices for Natural Gas are in multiples of 1.
