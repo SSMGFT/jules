@@ -44,6 +44,23 @@ def main():
         logging.info(f"Access token saved to {ACCESS_TOKEN_FILE}")
     except Exception as e:
         logging.error(f"Failed to save access token to file: {e}")
+        return
+
+    # --- 5. Test the access token by fetching profile ---
+    try:
+        # Re-initialize KiteConnect with the new access token to test it
+        kite.set_access_token(access_token)
+        profile = kite.profile()
+        logging.info("--------------------------------------------------")
+        logging.info("SUCCESS: Your credentials and new token are working.")
+        logging.info(f"Profile fetched successfully: {profile['user_id']}")
+        logging.info("--------------------------------------------------")
+    except Exception as e:
+        logging.error("--------------------------------------------------")
+        logging.error(f"TEST FAILED: Could not fetch profile with the new token: {e}")
+        logging.error("This confirms the issue is with your API key, secret, or subscription permissions.")
+        logging.error("Please check your Kite Developer Console.")
+        logging.error("--------------------------------------------------")
 
 
 if __name__ == "__main__":
