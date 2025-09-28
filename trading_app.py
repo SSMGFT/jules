@@ -18,6 +18,7 @@ VALIDITY = "DAY"
 TRANSACTION_TYPE_BUY = "BUY"
 FUTURES_SYMBOL_BASE = "NATURALGAS"
 MONTH_ABBR = "OCT"
+MARKET_PROTECTION_AUTO = -1
 
 
 def main():
@@ -121,6 +122,7 @@ def main():
                 product=PRODUCT,
                 order_type=ORDER_TYPE,
                 validity=VALIDITY,
+                market_protection=MARKET_PROTECTION_AUTO,
             )
             logging.info(
                 f"Successfully placed order for {option['tradingsymbol']}. Order ID: {order_id}"
